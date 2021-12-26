@@ -1,21 +1,38 @@
 import {View, Text, Image, Dimensions, StyleSheet} from "react-native";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Heart, Comment, Message, More, Bookmark} from "../../icons";
 import SeeMore from 'react-native-see-more-inline';
 import { dayjs } from "../../utils"
 
 function Post({post}) {
 
-    const [width, setWidth] = useState(0)
-    const [height, setHeight] = useState(0)
-
-    Image.getSize(post.image, (w, h) => {
-        const screenWidth = Dimensions.get('window').width
-        const scaleFactor = w / screenWidth
-        const imageHeight = h / scaleFactor
-        setWidth(screenWidth)
-        setHeight(imageHeight)
+    // State
+    const [state, setState] = useState({
+        width:0,
+        height:0
     })
+
+    // Kod bozulmasın diye dışarı aktardım. or state.height
+    const {width,height} = state
+
+    useEffect(() => {
+        // UseEffect içine alınmaz ise aşağıda ki setState işlemimiz ile tekrardan hesaplanır.
+        // Set işlemi tekrardan olur fakat genişlik yükseklik değişmediği için Yeni bir setState işlemi yapılsa dahi veriler değişmediği için render edilmez.
+        // Burda değişken bir screenWidth olduğunu düşünürsek (Çok Mümkün değil :D ) sonsuz render olucaktır. sabit olmayan bir img, gif gibi birşey yükleyerek uyg crash edilebilir
+        Image.getSize(post.image, (w, h) => {
+            const screenWidth = Dimensions.get('window').width
+            const scaleFactor = w / screenWidth
+            const imageHeight = h / scaleFactor
+
+            // Stabil tek bir render ile güncellememizi yaptık
+            setState(s => ({
+                ...s,
+                width:screenWidth,
+                height:imageHeight
+            }))
+        })
+    }, [])
+
 
     return (
         <View style={styles.post}>

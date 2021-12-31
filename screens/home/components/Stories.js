@@ -10,7 +10,7 @@ function Stories() {
                 horizontal={true}
             >
                 {stories.map(story => (
-                    <View style={styles.story}>
+                    <View key={story.id} style={styles.story}>
                         <LinearGradient
                             colors={['#DE0046', '#F7A34B']}
                             style={styles.cover}
@@ -35,8 +35,6 @@ export default Stories
 const styles = StyleSheet.create({
     stories: {
         paddingVertical: 10,
-        borderBottomWidth: 0.5,
-        borderBottomColor: '#DADADA'
     },
     story: {
         width: 67,
